@@ -104,10 +104,10 @@ class Learner:
         agent_type = type(self.agent)
         if agent_type == SarsaAgent or agent_type == SarsaApproxAgent:
             if agent_type == SarsaAgent:
-                self.pickle_file = "sarsa_lambda_value_function.pickle"
+                self.pickle_file = "results/sarsa_lambda_value_function.pickle"
             else:
-                self.pickle_file = "sarsa_approx_value_function.pickle"
-                self.weights_file = "sarsa_approx_weights.pickle"
+                self.pickle_file = "results/sarsa_approx_value_function.pickle"
+                self.weights_file = "results/sarsa_approx_weights.pickle"
             if load:
                 self.load_val_func()
             else:
@@ -128,12 +128,12 @@ class Learner:
                     labels = {"X":"Episode #", 
                               "Y":"Mean Squared Error"}
                     plot_line(x_vals, y_vals, labels, \
-                              f"{str(agent_type.__name__)} MSE vs Episode with lambda = {self.agent._lambda}")
+                              f"{str(agent_type.__name__)} MSE vs Episode with lambda = {self.agent._lambda}", save_dir="results")
 
         # if Monte Carlo Agent
         elif type(self.agent) == MCAgent or type(self.agent) == RandomAgent:
             # Load file from pickle
-            self.pickle_file = "mc_value_function.pickle"
+            self.pickle_file = "results/mc_value_function.pickle"
             if load:
                 self.load_val_func()
             else:
@@ -226,12 +226,12 @@ def get_sarsa_stats(is_approx=False):
         errors.append(get_mse(s_agent.Q, monte_carlo_agent.Q))
     plot_line(lambdas, errors, labels={"X":"lambda", \
                                     "Y":"mean squared error"}, \
-                                        title=f"{type(s_agent).__name__} mean squared error vs lambda value")
+                                        title=f"{type(s_agent).__name__} mean squared error vs lambda value", save_dir="results")
 
-    print("Mean Squared Errors at different lambdas: ",errors)
+    print("Mean Squared Errors at different lambdas: ", errors)
 
 
-def plot_value_function(Q, title):
+def plot_value_function(Q, title, save_dir):
     """
     Plots value function in a 3D surface.
     """
@@ -262,7 +262,7 @@ def plot_value_function(Q, title):
         vectorized_f = np.vectorize(f)
         return vectorized_f(x, y)
     labels = {"X":"dealer showing", "Y":"player's sum", "Z":"Value"}
-    display_surface(d_set, p_set, func, labels, title)
+    display_surface(d_set, p_set, func, labels, title, save_dir)
 
 
 if __name__ == "__main__":
@@ -286,6 +286,8 @@ if __name__ == "__main__":
 
     num_games = 100000
     for z in range(1):
+        # Evaluating the different policies/architectures over 
+        # num_games
         mc_learner.eval(num_games, False)
         sarsa_learner.eval(num_games, False)
         sarsa_approx_learner.eval(num_games, False)
@@ -296,10 +298,10 @@ if __name__ == "__main__":
     get_sarsa_stats(is_approx=False)
     get_sarsa_stats(is_approx=True)
 
-    plot_value_function(mc_learner.agent.Q, title="Monte Carlo Action Value Function")
-    plot_value_function(sarsa_learner.agent.Q, title="Sarsa Action Value Function")
+    plot_value_function(mc_learner.agent.Q, title="Monte Carlo Action Value Function", save_dir="results")
+    plot_value_function(sarsa_learner.agent.Q, title="Sarsa Action Value Function", save_dir="results")
     plot_value_function(sarsa_approx_learner.agent.Q, \
-                        title="Sarsa Linear Approximation Value Function")
+                        title="Sarsa Linear Approximation Value Function", save_dir="results")
     
     human_plays = input("Do you wanna play ? Yes(Y) or no(N)")
     if human_plays.lower() in ["y", "yes"]:
