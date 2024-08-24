@@ -1,12 +1,17 @@
 import random
 class Agent:
     def __init__(self, name):
+        """ Initializes an agent with an action value function (look-up table) and a name."""
         self.n_init = 100
         self.name = name
         self.Q = {} # action value function (look-up table)
+        self.e = None # exploration probability
         # sample self.Q = {"state_1":{"count": 234, "actions":{"action_1":{"value": 0.9, "count": 23}}}
     
     def get_optimal_action(self, state, possible_actions):
+        """
+        Pick best action given current estimate of action value function without exploration.
+        """
         assert len(possible_actions) > 0
         best = possible_actions[0]
         max_val = -1 * float("inf")
@@ -20,7 +25,7 @@ class Agent:
 
     def get_action(self, state, possible_actions=["1", "0"], game_mode=False):
         """
-        The Agent's policy: select the action with best value with a probability of 1 - e, 
+        The Agent's policy (e-greedy): select the action with best value with a probability of 1 - e, 
                             select another random action with probability of e.
         """
         state = str(state)
@@ -32,7 +37,7 @@ class Agent:
             
         if state in self.Q:
             optimal_action = self.get_optimal_action(state, possible_actions)
-            e = self.n_init / (self.n_init + self.Q[state]["count"])
+            e = self.n_init / (self.n_init + self.Q[state]["count"]) if self.e is None else self.e
             # print(e)
             if random.random() < e: # explore
                 assert len(possible_actions) > 1, \

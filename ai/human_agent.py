@@ -5,6 +5,7 @@ class HumanAgent(Agent):
         self.assist_agent = assist_agent
     
     def get_action(self, state, possible_actions):
+        """ Get action from human input (with maybe an assist from an AI agent)"""
         print(f"Player's Hand: {state[1]}, Dealer's Hand: {state[0]}")
         if not self.assist_agent is None:
             print(f"{self.assist_agent.name} recommends:",\
@@ -12,6 +13,7 @@ class HumanAgent(Agent):
         return self.get_human_input()
     
     def get_human_input(self):
+        """ Get and validate human input"""
         while True:
             try:
                 is_hit = int(input("Hit(1) or Stick(0):\n..."))
