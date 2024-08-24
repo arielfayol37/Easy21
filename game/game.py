@@ -88,6 +88,7 @@ class Game:
             node = self.ai.get_new_node(state, action, node)
             state, r = self.step(state, action)
             node.add_reward(r)
+            self.ai.td_update(node, state, state==terminal_state)
         assert node != None
         return node
 

@@ -27,7 +27,7 @@ def f(x, y):
     return np.sin(x) * np.cos(y)
 
 
-def display_surface(x, y, func, labels):
+def display_surface(x, y, func, labels, title='title'):
     # Define the grid of points
     x, y = np.array(x), np.array(y)
     X, Y = np.meshgrid(x, y)
@@ -44,5 +44,23 @@ def display_surface(x, y, func, labels):
 
     # Add a color bar which maps values to colors
     fig.colorbar(surf, shrink=0.5, aspect=5)
+    plt.title(title)
+    if title != "title":
+        plt.savefig(title + ".png")
     plt.show()
+
+def plot_line(x_vals, y_vals, labels, title):
+    # Create the line plot
+    plt.figure(figsize=(10, 6))  # Optional: set the figure size
+    plt.plot(x_vals, y_vals)
+
+    # Add labels and title
+    plt.xlabel(labels["X"])
+    plt.ylabel(labels["Y"])
+    plt.title(title)
+
+    # Display the plot
+    plt.grid(True)  # Optional: add a grid
+    plt.savefig(title + ".png")  # Save the plot
+    plt.show()  # Display the plot
 
